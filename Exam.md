@@ -16,7 +16,7 @@ Your friend thinks SPIN has shown conclusively that an entire OS can be written 
 
 ---
 
-SPIN was written primarily in the high-level language Modula-3 which provided static typing and strong typing. This is in constrast to many other operating systems of the day, and even most operating systems today, which were written in the low-level language C. SPIN's construction in Modula-3 proved that high-level languages can be used to build operating systems.
+__TODO__
 
 ## 1.2 (3 points)
 

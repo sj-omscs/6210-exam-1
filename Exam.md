@@ -1,4 +1,4 @@
-# -1 Helpful Resources
+# -1. Helpful Resources
 
 [https://docs.google.com/document/d/1Y4LsvVK9yQWaJaJwAlarXVf2W4kfDEPNKUwQ4nYXbRI/edit#](https://docs.google.com/document/d/1Y4LsvVK9yQWaJaJwAlarXVf2W4kfDEPNKUwQ4nYXbRI)
 
@@ -6,7 +6,7 @@
 
 # 0. (1 point)
 
-OMSCS program was launched in:
+OMSCS program was launched in
 
 ---
 
@@ -86,7 +86,7 @@ SPIN is a microkernel
 
 ---
 
-__TODO__
+False. __TODO: Justify__
 
 ## 1.f (T/F + justification) (2 points)
 
@@ -94,7 +94,7 @@ Exokernel is a microkernel
 
 ---
 
-__TODO__
+False. The Exokernel architecture stands apart from Microkernels through its use of low-level primitives. This is what allows Exokernels to have performance that is superior to microkernels.
 
 # 2. Virtualization (Paravirtualization) (34 points)
  
@@ -106,7 +106,11 @@ How will you ensure zero-copy semantics (i.e., no copying from your Xinolinux to
 
 ---
 
-__TODO__
+1. Data to be transmitted is stored in a buffer owned by Xenolinux
+1. Xenolinux will create a descriptor and issue a hypercall to enqueue the descriptor into the IO ring
+1. Xenolinux will pin the virtual pages containing the buffer during transmission so that Xen can transmit the data
+
+The above is sufficient to enable zero-copying of transmitted data between Xenolinux and Xen. Xen is able to directly access the data to be transmitted through the buffer owned by Xenolinux
 
 ## 2.b (Paravirtualization) (4 points)
 
@@ -114,7 +118,10 @@ How will you ensure zero-copy semantics for receiving a packet from Xen into Xin
 
 ---
 
-__TODO__
+This is very similar to the previous case.
+
+1. Data to be received will be stored in a pre-allocated buffer owned by Xenolinux
+1. Xen will 
 
 ## 2.c (Paravirtualization) (4 points)
 

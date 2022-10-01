@@ -148,9 +148,17 @@ __HIDDEN__
 
 You are implementing an invalidation-based cache coherent shared memory multiprocessor, wherein each processor has a private cache. You start with a uniprocessor as a basic building block. The ISA of the processor supports an atomic Test-and-Set (T&S) instruction. Your aim is to make sure that the T&S operation is globally atomic. What design choices are available to you to achieve this aim?
 
+---
+
+__TODO__
+
 ## 3.b (memory model) (4 points)
 
 Your co-worker wants to provide a sequential consistency memory model to the application programmer on top of your multiprocessor. How can you take care of her requirement in your cache coherent multiprocessor design?
+
+---
+
+__TODO__
 
 ## 3.c (spinlock) (4 points)
 
@@ -247,10 +255,6 @@ __TODO__
 You are implementing the virtual memory manager for your multiprocessor OS.
 
 You have a page fault handler that executes independently in each processor. If there is a page fault for the currently executing thread/process, then the handler on that processor deals with it without disturbing the activities on the other processors. Your OS supports both single-threaded processes as well as multi-threaded processes. You implement your memory management system in the conventional manner with a page table per process that provides the mapping of the VPN to PPN (or the disk address if it is not in physical memory).
-
----
-
-__TODO__
 
 ### 3.h.1 (2 points?)
 

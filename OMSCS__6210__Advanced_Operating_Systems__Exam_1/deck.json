@@ -58,7 +58,9 @@
     "dyn": 0,
     "extendNew": 0,
     "extendRev": 0,
-    "media_files": [],
+    "media_files": [
+        "Screenshot 2022-09-30 at 21.30.49.png"
+    ],
     "name": "OMSCS: 6210: Advanced Operating Systems: Exam 1",
     "note_models": [
         {
@@ -129,6 +131,276 @@
                 "2014"
             ],
             "guid": "H=q8kk3IXC",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>Your friend thinks SPIN has shown conclusively that an\nentire OS can be written in a high-level language that provides\nstrong type safety. Would you agree with her point of view?&nbsp;</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "GF/Sdiy5>,",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>Upon page fault service by a library OS, the mapping\n&lt;vpn, pfn&gt; has to be installed into the TLB by Exokernel on behalf of\nthe library OS. Therefore, your friend thinks that Exokernel cannot\nprovide good performance compared to a monolithic design of an OS.\nHow would you counter her argument?&nbsp;</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "v`D%E|}`+;",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>L3 microkernel requires each subsystem to be in distinct\narchitecture enforced protection domain. L3 is implemented on an\narchitecture wherein there is no address-space tagging support in the\nTLB. The architecture does support segment registers.&nbsp;</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "b+)zzjK%<&",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>Your friend thinks that the performance is going\nto be terrible compared to SPIN due to the need for using\narchitecture-enforced protection domains. What would be your counter\nargument?&nbsp;</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "yBT~B,r-U]",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>Your friend thinks that L3’s approach to OS\nstructuring would incur more implicit cost for protection domain\nswitch compared to a monolithic design. Is she right or wrong?\nDefend your stand with justification.&nbsp;</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "PBZ>FQq@DK",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "\n<div>\n<div>\n<div>\n<div>Give one example of how SPIN’s intellectual contribution can be traced to the state-of-the-art in modern systems.<br></div>\n</div>\n</div>\n</div>",
+                ""
+            ],
+            "guid": "dX9}sv:YGw",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "\n<div>\n<div>\n<div>\nGive one example of how Exokernel’s intellectual contribution can be\ntraced to the state-of-the-art in modern systems.&nbsp;<br><ol>\n</ol>\n</div>\n</div>\n</div>",
+                ""
+            ],
+            "guid": "g4?r]=RpDd",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "\n<div>\n<div>\n<div>\n“SPIN and Exokernel are fair in comparing the superiority of their\nrespective specialization approaches for OS services relative to Mach\nmicro-kernel.”&nbsp;<br><ol>\n</ol>\n</div>\n</div>\n</div>",
+                ""
+            ],
+            "guid": "P/q:|%9aY^",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>Is SPIN a microkernel (true/false with justification)</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "yE^1qoJ|KD",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "Is Exokernel a microkernel? (true/false with justification)",
+                ""
+            ],
+            "guid": "q%#&hfLAh+",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>How will you ensure zero-copy semantics (i.e., no copying\nfrom your Xinolinux to Xen) for transmitting a packet?&nbsp;</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "yY@MC0AhOq",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>How will you ensure zero-copy semantics for receiving a\npacket from Xen into Xinolinux?<br>\n</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "n~3^59XwU@",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>Multiple processes on top of Xinolinux wish to transmit at\nthe same time. How do you handle this situation in your implementation?&nbsp;</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "q?+D)(=R{U",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>Assume a guest-OS has started 4 processes in a fully virtualized\nenvironment on a 32-bit machine. Assuming 4K page size, explain how many\nentries this guest-OS has in the shadow page table.&nbsp;</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "J6Gd*OE;D$",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>Assume an architecture which uses a page table for address translation.\nThe CPU has a PTBR to point to the current page table used by the\nprocessor for address translation.&nbsp;</div><div><br></div><div><div>\n<div>\n<div>\n<div>\n<div>A process P1 is executing on top of a fully virtualized OS. The OS wishes\nto context switch from P1 to P2.&nbsp;</div><div><br></div><div><div>\n<div>\n<div>\n<div>\n<div>List the steps before P2 starts execution on the processor.&nbsp;</div>\n</div>\n</div>\n</div></div></div>\n</div>\n</div>\n</div></div></div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "x*Im<>.gIj",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>You are implementing an invalidation-based cache coherent shared memory\nmultiprocessor, wherein each processor has a private cache. You start with a uniprocessor as a basic building block. The ISA of the processor\nsupports an atomic Test-and-Set (T&amp;S) instruction. Your aim is to make\nsure that the T&amp;S operation is globally atomic. What design choices are\navailable to you to achieve this aim?</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "v=p=@1h-h~",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>Your co-worker wants to provide a sequential consistency memory model to\nthe application programmer on top of your multiprocessor. How can you\ntake care of her requirement in your cache coherent multiprocessor design?&nbsp;</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "g@5>!XaJ/G",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>Consider the following lock algorithm using T&amp;S:\n</div>\n<div>while ((L == locked) or (T&amp;S(L) == locked))\n{\n</div>\n<div>&nbsp; &nbsp; while (L == locked); // spin\n</div>\n<div>&nbsp; &nbsp; delay (d[Pi]); // different delays for different processors</div><div>}\n</div>\n<div>// success if we are here</div><div><br></div><div>This algorithm does not rely on hardware cache coherence.</div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "t8aj:bWQIw",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>Consider the following lock algorithm using T&amp;S:</div><div>while ((L == locked) or (T&amp;S(L) == locked)) {</div><div>&nbsp; &nbsp; while (L == locked); // spin</div><div>&nbsp; &nbsp; delay (d[Pi]); // different delays for different processors</div><div>}</div><div>// success if we are here</div><div><br></div><div><div>\n<div>\n<div>\n<div>\n<div>The algorithm performs especially well under high lock contention.&nbsp;</div>\n</div>\n</div>\n</div></div></div>",
+                ""
+            ],
+            "guid": "g;u#K9H0P}",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "\n<div>\n<div>\n<div>\n<div>The ticket lock algorithm shown below gives fairness and each spinning\nprocessor spins for a different amount of time commensurate with its\nexpected wait time for the lock before testing if the lock is available.</div><div><br></div><div><img src=\"Screenshot 2022-09-30 at 21.30.49.png\">&nbsp;<br></div><div><div>\n<div>\n<div>\n<div>\n<div>What (if any) are the reasons for this algorithm to not work well?&nbsp;</div>\n</div>\n</div>\n</div></div></div>\n</div>\n</div>\n</div>",
+                ""
+            ],
+            "guid": "zw|#U59D`%",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "\n<div>\n<div>\n<div>MCS barrier will not work on a NCC-NUMA architecture.<br><ol>\n</ol>\n</div>\n</div>\n</div>",
+                ""
+            ],
+            "guid": "QwgPE%DJ>]",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\nThe total communication complexity of dissemination barrier is\nO(N*Log2N)<br><ol>\n</ol>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "GB|i#Yn&-",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "\n<div>\n<div>\n<div>\nThe tournament barrier works with both shared memory and\nmessage-passing (i.e., clusters) architectures.&nbsp;<br><ol>\n</ol>\n</div>\n</div>\n</div>",
+                ""
+            ],
+            "guid": "BF#{&w72OQ",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>A multi-threaded multicore CPU is one in which each chip has multiple\ncores and each core has multiple hardware threads. The OS chooses the set\nof application threads to be scheduled on the hardware threads in each\ncore. Given that the hardware threads share a single processor pipeline\non the core,&nbsp;</div><div><br></div><div><div>\n<div>\n<div>\n<div>\n<div>What purpose is served by the hardware threads?<br>\n</div>\n</div>\n</div>\n</div></div></div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "C=pR1p_B</",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>A multi-threaded multicore CPU is one in which each chip has multiple cores and each core has multiple hardware threads. The OS chooses the set of application threads to be scheduled on the hardware threads in each core. Given that the hardware threads share a single processor pipeline on the core,&nbsp;</div><div><br></div><div><div>\n<div>\n<div>\n<div>\n<div>What should the OS do ensure that processor pipeline is utilized\nwell? Why?&nbsp;</div>\n</div>\n</div>\n</div></div></div>",
+                ""
+            ],
+            "guid": "Cl?*,]oH+q",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "<div>\n<div>\n<div>\n<div>\n<div>You are implementing the virtual memory manager for your multiprocessor\nOS. You have a page fault handler that executes independently in each\nprocessor. If there is a page fault for the currently executing\nthread/process, then the handler on that processor deals with it without\ndisturbing the activities on the other processors. Your OS supports both\nsingle-threaded processes as well as multi-threaded processes. You\nimplement your memory management system in the conventional manner with a\npage table per process that provides the mapping of the VPN to PPN (or the\ndisk address if it is not in physical memory).</div><div><br></div><div><div>\n<div>\n<div>\n<div>\n<div>Does your design ensure that if there are concurrent page faults\nincurred by independent processes running on different processors, they\nwill be handled by your memory manager concurrently? Justify your answer.&nbsp;</div>\n</div>\n</div>\n</div></div></div>\n</div>\n</div>\n</div></div>",
+                ""
+            ],
+            "guid": "espKrROz-A",
+            "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
+            "tags": []
+        },
+        {
+            "__type__": "Note",
+            "fields": [
+                "\n<div>\n<div>\n<div>\n<div>You are implementing the virtual memory manager for your multiprocessor\nOS. You have a page fault handler that executes independently in each\nprocessor. If there is a page fault for the currently executing\nthread/process, then the handler on that processor deals with it without\ndisturbing the activities on the other processors. Your OS supports both\nsingle-threaded processes as well as multi-threaded processes. You\nimplement your memory management system in the conventional manner with a\npage table per process that provides the mapping of the VPN to PPN (or the\ndisk address if it is not in physical memory).&nbsp;</div><div><br></div><div><div>\n<div>\n<div>\n<div>\n<div>Does your design ensure that if there are concurrent page faults\nincurred by threads of the same process running on different processors,\nthey will be handled by your memory manager concurrently? Justify your\nanswer.&nbsp;</div>\n</div>\n</div>\n</div></div></div>\n</div>\n</div>\n</div>",
+                ""
+            ],
+            "guid": "e,b6vl~]3K",
             "note_model_uuid": "95004ff0-4140-11ed-bd8e-89e0e847384d",
             "tags": []
         }

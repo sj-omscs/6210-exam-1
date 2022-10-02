@@ -1,8 +1,8 @@
 # -1. Helpful Resources
 
-[https://docs.google.com/document/d/1Y4LsvVK9yQWaJaJwAlarXVf2W4kfDEPNKUwQ4nYXbRI/edit#](https://docs.google.com/document/d/1Y4LsvVK9yQWaJaJwAlarXVf2W4kfDEPNKUwQ4nYXbRI)
+[Test Questions](https://docs.google.com/document/d/1Y4LsvVK9yQWaJaJwAlarXVf2W4kfDEPNKUwQ4nYXbRI/edit?usp=sharing)
 
-[https://docs.google.com/document/d/1oy_Xa8F4Ql4VTws-oVIISL1j1bQLTqmTt-Bs5ho2Ko0/edit](https://docs.google.com/document/d/1oy_Xa8F4Ql4VTws-oVIISL1j1bQLTqmTt-Bs5ho2Ko0)
+[Practice Questions](https://docs.google.com/document/d/1oy_Xa8F4Ql4VTws-oVIISL1j1bQLTqmTt-Bs5ho2Ko0/edit?usp=sharing)
 
 # 0. (1 point)
 
@@ -22,11 +22,9 @@ Your friend thinks SPIN has shown conclusively that an entire OS can be written 
 
 ---
 
-* SPIN was written primarily in the high-level language Modula-3 which provided static typing and strong typing
-  * This is in constrast to many other operating systems of the day, and even most operating systems today, which were written primarily in the low-level language C
-* SPIN incorporated the C language alongside Modula-3 for some low-level operations
-* SPIN's construction in Modula-3 proved that high-level languages can be used to build many parts of an operating system
-* SPIN did not prove that an entire operating system can be witten in a high-level language
+No.
+
+SPIN was primarily written in the high-level language Modula-3, but portions of it was written in C.
 
 ## 1.2 (3 points)
 
@@ -34,16 +32,17 @@ Upon page fault service by a library OS, the mapping `<vpn, pfn>` has to be inst
 
 ---
 
-* Monoliths have a clear performance advantage when it comes to creating TLB entries
-  * Monoliths can simply create the TLB entry when handling a page fault
-  * Library OS's must create a secure binding when writing to the TLB. Creating a secure binding adds overhead
-  * The cost of secure bindings is greatly reduced with a software TLB (STLB), but the cost is still present
-  * The cost of writing to the TLB can be amortized over the lifetime of the TLB entry
-    * This benefit is reduced or even entirely eliminated when a programs working set is greater than the capacity of the TLB 
-* Exokernel can be faster than monoliths in other situations
-* Experimental evidence shows that the Aegis Exokernel and ExOS Exokernel are significantly faster at some tasks than the monolithic Ultrix
+* Exokernel will be slower when writing to the TLB
+  * Secure Bindings
+    * Exokernels must create a secure binding when writing to the TLB
+    * STLB can cache these bindings
+    * Cost of creating the binding can be amortized over the lifetime of the TLB entry
+    * Programs with a working set larger than the TLB will see a greater slowdown
+* Exokernels can be faster in other situations as shown by Aegis and ExOS
   * Handling system calls and dispatching exceptions
   * Using IPC mechanisms like pipes and shared memory
+
+---
 
 ## 1.3
 
@@ -52,6 +51,13 @@ L3 microkernel requires each subsystem to be in distinct architecture enforced p
 ### 1.3.a (3 points)
 
 Your friend thinks that the performance is going to be terrible compared to SPIN due to the need for using architecture-enforced protection domains. What would be your counter argument?
+
+---
+
+* Segment registers allow L3 to implement protection domains in one address space. The segment registers will enforce protection.
+  * Using one address space allows L3 to skip a TLB flush for small protection domains
+* L3 is able to handle system calls much more efficiently
+* Experimental evidence proved that L3 is significantly faster than SPIN in IPC
 
 ---
 
@@ -367,7 +373,7 @@ What purpose is served by the hardware threads?
 
 ---
 
-__TODO__
+The purpose of multiple hardware threads in each core is to ensure efficient utilization of the single processor pipeline available to each core. If a hardware thread has to perform a long latency operation, e.g., miss in the last level cache (LLC) causing the processor to go off-chip to fetch the missing access from the memory (which can take 100 or more CPU cycles), the hardware can switch to another hardware thread. 
 
 ### 3.g.2
 
@@ -375,7 +381,7 @@ What should the OS do ensure that processor pipeline is utilized well? Why?
 
 ---
 
-__TODO__
+In scheduling the set of threads to run on the chip, the OS should ensure that the combined working sets of all the threads (number of cores X number of hardware threads per core) can be packed into the last level cache to reduce the occurrence of long latency operations (i.e., misses in the LLC).
 
 ## 3.h (memory manager for multiprocessor) (4 points)
 
@@ -389,7 +395,8 @@ Does your design ensure that if there are concurrent page faults incurred by ind
 
 ---
 
-__TODO__
+Yes.
+Since we have a page table per process, the page table needed to cater to different page faults would be different.
 
 ### 3.h.2 (2 points?)
 
@@ -397,4 +404,5 @@ Does your design ensure that if there are concurrent page faults incurred by thr
 
 ---
 
-__TODO__
+No.
+Since the mappings from VPN to PPN for different threads of the same process will be present in the same page table, the memory manager would need to serialize the handling of these page faults

@@ -123,7 +123,12 @@ SPIN and Exokernel are fair in comparing the superiority of their respective spe
 
 ---
 
-__TODO__
+SPIN and Exokernel both aim for extensibility and performance while Mach focus on portability. Mach's focus on the ability to run independently of hardware architecture leads to a bloated code base. This results in lesser locality and longer latency for border crossing. Overall the Mach's memory footprint is the culprit for expensive border crossing and not the microkernel based structure itself. This is the tradeoff in terms of performance for portability. 
+
+---
+
+1. True. SPIN and Exokernel succeeded in designing a microkernel-based OS that provides extensibility without giving up performance. 
+2. False. MACH was designed for portability and extensibility using a microkernel design and did not aim to optimize for performance. This is why MACH performs poorly (bloated kernel) in order to optimize for portability and it is NOT fair to compare MACH to SPIN and EXO on performance
 
 ## 1.d (8 points)
 
@@ -162,11 +167,14 @@ How will you ensure zero-copy semantics (i.e., no copying from your Xinolinux to
 
 ---
 
-1. Data to be transmitted is stored in a buffer owned by Xenolinux
-1. Xenolinux will create a descriptor and issue a hypercall to enqueue the descriptor into the IO ring
-1. If Xenolinux has the capability to swap pages to disk, then Xenolinux must pin the virtual pages containing the buffer so that the data is in memory for Xen to access during transmission.
-
-The above is sufficient to enable zero-copying of transmitted data between Xenolinux and Xen. Xen is able to directly access the data to be transmitted through the buffer owned by Xenolinux
+By using the transmission I/O ring: 
+1. Xenolinux pins the chosen page frames until transmission is complete (i.e., the memory buffer).
+2. XenoLinux checks if a descriptor is available in the xmit ring buffer it shares with Xen
+3. XenoLinux populates the descriptor (i.e., origin+dest address, pointer to memory buffer/pinned page) onto the transmit I/O ring
+4. Xen uses this descriptor with the pegged page to DMA with NIC
+5. Xen enqueues the response in the descriptor;
+6. XenoLinux polls the xmit ring for a response from Xen, unpins the page after receiving the result
+7. The result of the transmission is available;
 
 ## 2.b (Paravirtualization) (4 points)
 
@@ -174,11 +182,13 @@ How will you ensure zero-copy semantics for receiving a packet from Xen into Xin
 
 ---
 
-This is very similar to the previous case.
+By using the receiving I/O ring:
+1. Xen puts received packets in Xenolinux's recv-ring if it is the intended destination.
+2. XenoLinux must pin the pages (i.e., buffer) that it wants to put the packets on.
+3. Xen allocates a descriptor for the recv-ring and fills it with the details of the incoming packet.
+4. We avoid copying because Xenolinux pins pages for Xen to use the DMA received packets via Xenolinux's pinned page - we are exchanging received packet for XenoLinux's page
 
-1. Data to be received will be stored in a pre-allocated buffer owned by Xenolinux
-
-__TODO: elaborate__
+thus, we have completed a reception without copying
 
 ## 2.c (Paravirtualization) (4 points)
 
@@ -186,11 +196,27 @@ Multiple processes on top of Xinolinux wish to transmit at the same time. How do
 
 ---
 
-__TODO__
+- XenoLinux must queue requests using the I/O rings.
+- XenoLinux is the only writer to the rings' request producer pointer; so it has exclusive control over making requests; Xenolinux can orchestrate when requests are queued
+- Xenolinux can tell if it must wait via the distance between the request producer and request consumer pointers in the I/O rings
+- if ever there is a process that wants to make a request but there is no slots left in the I/O ring, xenolinux can schedule the process to try again later
+- After Xenolinux has made its queueing decisions, it makes a hypercall to alert Xen (source Xen paper)
+- in turn, Xen can alert Xenolinux of a response either by software interrupt OR having xeno poll for response using the response consumer pointer
+- Xenolinux de-multiplexes responses the descriptor to the proces
+
+The above means Xenolinux can coordinate multiple transmissions from different processes thanks to I/O ring and de-multiplexing via descriptors.
+
+Xen on the otherhand can round robin rings to handle requests
+
+__TODO: this was copied and needs to be revised__
 
 ## 2.d (Full virtualization) (8 points)
 
 Assume a guest-OS has started 4 processes in a fully virtualized environment on a 32-bit machine. Assuming 4K page size, explain how many entries this guest-OS has in the shadow page table.
+
+---
+
+__TODO__
 
 ## 2.e (Full virtualization) (4 points)
 
@@ -202,7 +228,12 @@ List the steps before P2 starts execution on the processor.
 
 ---
 
-__TODO__
+1. Guest OS tries to execute a privileged instruction to set the PTBR (page table base register) to the new process’s page table data structure (the PPN that contains this process’s page table).
+1. The ensuing trap is caught by the hypervisor. 
+1. Hypervisor uses the shadow page table for this Guest OS to get the MPN that corresponds to this PPN. This gives the page table for this process in machine memory.
+1. Hypervisor sets PTBR to this MPN.
+1. The Guest OS does the other necessary steps for the normal context switch. (e.g. load/store volatile state to/from PCB) all of which is accomplished using “trap and emulate” method.
+
 
 ## 2.f (10 points)
 
@@ -216,7 +247,10 @@ You are implementing an invalidation-based cache coherent shared memory multipro
 
 ---
 
-__TODO__
+1. Execute the RMW operating in the cache controller: Use the invalidation based CC protocol to obtain exclusive ownership for the memory location on which T&S is being performed and execute the RMW operation 
+1. Extended ownership of the interconnect: Give exclusive ownership of the interconnect (e.g., bus) so that the processor can complete the T&S operation to the memory location bypassing the cache. 
+1. Execute the RMW in the memory controller: Bypass the cache and send the T&S request to the memory controller. The memory controller serializes the T&S operation from different processors to the same memory location.
+
 
 ## 3.b (memory model) (4 points)
 
@@ -224,7 +258,9 @@ Your co-worker wants to provide a sequential consistency memory model to the app
 
 ---
 
-__TODO__
+* Sequential consistency can be ensured by using cache coherence protocols to ensure exclusive access to a memory location before writing to it. 
+* For e.g., if we use an invalidate based coherence protocol, all cached copies of the cache line will be invalidated before a processor writes to that cache line. Other processors can fetch the updated cache line after the write (from the processor or memory).
+
 
 ## 3.c (spinlock) (4 points)
 
@@ -244,7 +280,12 @@ This algorithm does not rely on hardware cache coherence.
 
 ---
 
-__TODO__
+False, this algorithm does use hardware cache coherence. It spins on the cached variable, waiting for it to be released. Once released, it will try to acquire the lock again
+
+---
+
+False.
+Processors spin on cached value (While (L==locked)). The only way for them to come out of the spin loop is if the cached value changes which necessitates hardware cache coherence.
 
 ### 3.c.2 (T/F + justification) (No credit without justification) (2 points?)
 
@@ -252,7 +293,13 @@ The algorithm performs especially well under high lock contention.
 
 ---
 
-__TODO__
+True.
+Spinlock with static delay is better than spinlock with dynamic delay when there is high lock contention. Each processor gets a different delay, so there is a sequentializing of the order of the processors.
+
+---
+
+True. 
+Upon lock release, different processors wait for different amount of delay times thus reducing the contention on the bus
 
 ## 3.d (spinlock) (4 points)
 
@@ -264,7 +311,13 @@ What (if any) are the reasons for this algorithm to not work well?
 
 ---
 
-__TODO__
+Note that the question specifies we are using an invalidation based CC protocol
+
+(For an update-based CC protocol):
+Upon each lock release L->now_serving is updated which results in unnecessary bus contention, since the change is meaningful for only ONE processor that is next in line to get the lock.
+
+(For invalidation-based protocol):
+The duration of pause (spin loop) is just a guestimate of the expected wait time for a processor. Every time it comes out to check if it is its turn for the lock, there would be bus contention to get L->now_serving if its cached value has been invalidated (due to an unlock operation).
 
 ## 3.e (barrier) (T/F + justification) (No credit without justification) (6 points)
 
@@ -274,7 +327,13 @@ MCS barrier will not work on a NCC-NUMA architecture.
 
 ---
 
-__TODO__
+False.
+Processors using an MCS barrier spin on statically-determined flag variables only, so these locations can be located in the local memory of each processor, yielding good performance for NUMA architectures.
+Arrival and wake-up in MCS use explicit signaling of parents/children using distinct memory locations, so these signals can be sent directly to the parent/children without relying on cache coherence protocols.
+
+---
+
+• False. MCS barrier spins on statically determined locations, so a child updating a parent’s memory (remotely) will also update their cache, since even in NCC-NUMA, the memory hierarchy is locally kept consistent.
 
 ### 3.e.2 (2 points?)
 
@@ -282,7 +341,8 @@ The total communication complexity of dissemination barrier is O(N\*Log2N)
 
 ---
 
-__TODO__
+True
+The dissemination barrier is made up of ceil(log2N) ~ log2(N) rounds, and in each round each processor sends a message, leading to a total of N\*Log2N messages being sent.
 
 ### 3.e.3 (2 points?)
 
@@ -290,7 +350,8 @@ The tournament barrier works with both shared memory and message-passing (i.e., 
 
 ---
 
-__TODO__
+True.
+The algorithm works by allowing one statically determined representative process from each round to go to the next round. When on a shared memory architecture (SMP, NUMA/NCC), the algorithm relies on spinning on a statically determined spin location that indicates the state of the barrier. It also works with message passing in cluster architecture, since the algorithm simply requires that the representative process can signal to the other process.
 
 ## 3.f (2 points)
 

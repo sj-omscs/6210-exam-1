@@ -141,14 +141,15 @@ How will you ensure zero-copy semantics (i.e., no copying from your Xinolinux to
 
 ---
 
-By using the transmission I/O ring: 
-1. Xenolinux pins the chosen page frames until transmission is complete (i.e., the memory buffer).
-2. XenoLinux checks if a descriptor is available in the xmit ring buffer it shares with Xen
-3. XenoLinux populates the descriptor (i.e., origin+dest address, pointer to memory buffer/pinned page) onto the transmit I/O ring
-4. Xen uses this descriptor with the pegged page to DMA with NIC
-5. Xen enqueues the response in the descriptor;
-6. XenoLinux polls the xmit ring for a response from Xen, unpins the page after receiving the result
-7. The result of the transmission is available;
+With the transmisison IO ring:
+
+1. Xenolinux will allocate a buffer that contains the data to be transmitted
+1. Xenolinux forms a descriptor containing the address of the buffer
+1. Xenolinux pins the pages containing the buffer so that Xen can access them during transmission
+1. Xenolinux issues a hypercall to queue the request
+1. Xen transmits the data by directly accessing the buffer
+1. Xenolinux poll the ring for a response from Xen
+1. When Xen responds, Xenolinux can unpin the page
 
 ## 2.b (Paravirtualization) (4 points)
 
@@ -156,13 +157,12 @@ How will you ensure zero-copy semantics for receiving a packet from Xen into Xin
 
 ---
 
-By using the receiving I/O ring:
-1. Xen puts received packets in Xenolinux's recv-ring if it is the intended destination.
-2. XenoLinux must pin the pages (i.e., buffer) that it wants to put the packets on.
-3. Xen allocates a descriptor for the recv-ring and fills it with the details of the incoming packet.
-4. We avoid copying because Xenolinux pins pages for Xen to use the DMA received packets via Xenolinux's pinned page - we are exchanging received packet for XenoLinux's page
-
-thus, we have completed a reception without copying
+1. Xenolinux pre-allocates buffers to hold incoming packets
+1. Xenolinux provides the locations of the buffers to Xen
+1. Xenolinux pins the buffers so that Xen can access them
+1. Xen directly copies data into a buffer provided by Xenolinux
+1. Xen enqueues a descriptor to let Xenolinux know about the data in the buffer
+1. Xenolinux handles the enqueued descriptor and is able to directly access the data
 
 ## 2.c (Paravirtualization) (4 points)
 
@@ -170,19 +170,13 @@ Multiple processes on top of Xinolinux wish to transmit at the same time. How do
 
 ---
 
-- XenoLinux must queue requests using the I/O rings.
-- XenoLinux is the only writer to the rings' request producer pointer; so it has exclusive control over making requests; Xenolinux can orchestrate when requests are queued
-- Xenolinux can tell if it must wait via the distance between the request producer and request consumer pointers in the I/O rings
-- if ever there is a process that wants to make a request but there is no slots left in the I/O ring, xenolinux can schedule the process to try again later
-- After Xenolinux has made its queueing decisions, it makes a hypercall to alert Xen (source Xen paper)
-- in turn, Xen can alert Xenolinux of a response either by software interrupt OR having xeno poll for response using the response consumer pointer
-- Xenolinux de-multiplexes responses the descriptor to the proces
+* Xenolinux provides a mutex that is locked when attempting to transmit data
+  * Processes will wait for their turn to access the mutex
+* Xenolinux will check for space in the IO ring before transmitting data
+  * Processes will wait until there is space in the IO ring
+* Data transfer can occur as usual
 
-The above means Xenolinux can coordinate multiple transmissions from different processes thanks to I/O ring and de-multiplexing via descriptors.
-
-Xen on the otherhand can round robin rings to handle requests
-
-__TODO: this was copied and needs to be revised__
+Xen will use a round-robin algorithm to transmit packets acrosss multiple VMs to ensure fairness.
 
 ## 2.d (Full virtualization) (8 points)
 

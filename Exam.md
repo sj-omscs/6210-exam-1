@@ -28,8 +28,6 @@ Your friend thinks SPIN has shown conclusively that an entire OS can be written 
 * SPIN's construction in Modula-3 proved that high-level languages can be used to build many parts of an operating system
 * SPIN did not prove that an entire operating system can be witten in a high-level language
 
-__TODO: revise__
-
 ## 1.2 (3 points)
 
 Upon page fault service by a library OS, the mapping `<vpn, pfn>` has to be installed into the TLB by Exokernel on behalf of the library OS. Therefore, your friend thinks that Exokernel cannot provide good performance compared to a monolithic design of an OS. How would you counter her argument?
@@ -43,7 +41,9 @@ Upon page fault service by a library OS, the mapping `<vpn, pfn>` has to be inst
   * The cost of writing to the TLB can be amortized over the lifetime of the TLB entry
     * This benefit is reduced or even entirely eliminated when a programs working set is greater than the capacity of the TLB 
 * Exokernel can be faster than monoliths in other situations
-  * Network packet filtering
+* Experimental evidence shows that the Aegis Exokernel and ExOS Exokernel are significantly faster at some tasks than the monolithic Ultrix
+  * Handling system calls and dispatching exceptions
+  * Using IPC mechanisms like pipes and shared memory
 
 ## 1.3
 
@@ -55,7 +55,17 @@ Your friend thinks that the performance is going to be terrible compared to SPIN
 
 ---
 
-__TODO__
+1. L3 can leverage segment registers to organize protection domains the same hardware address space;
+2. Because we've organized protection domains in the same hardware address space, we won't need to flush the TLB so we don't give up locality when switching domains
+3. the cost of switching domains will be limited to saving/updating segment registers corresponding to the domains
+
+---
+
+SPIN does not rely on hardware address space to enforce logical protection domain while L3 does. However, L3 construction shows that the cost for border crossing, including TLB and cache misses is only 123 processor cycles. As matter of fact, even if you hardcode machine instructions, it would still take 107 processor cycles to complete border crossing. Thus the cost of border crossing due to hardware- enforced protection domain is not as expensive as believed to be.
+
+---
+
+Even without AS tagging, L3 takes advantage of whatever the hardware arch offers for hardware enforced segment bounds. Hardware address space can be carved out into segment domains. Even without address tagging, the process knows which segment registers aka hardware address spaces it can access. For larger protection domains, the address space switching doesn’t even matter since implicit cache costs dominate, an issue that exists in both SPIN and L3.
 
 ### 1.3.b (3 points)
 
@@ -63,7 +73,16 @@ Your friend thinks that L3’s approach to OS structuring would incur more impli
 
 ---
 
-__TODO__
+1. L3 minimal ensures warm cache for small protection domains via minimal abstractions (to avoid polluting the cache) in the mKernel + optimization for the architecture 
+2. Monolith with separate hardware address spaces will need to flush the TLB in this architecture (no address-space tagging support) to distinguish between VPNs
+This means L3 would incur less implicit costs (cache locality)
+
+---
+
+Wrong.
+Implicit cost comes from loss of cache locality.
+In L3, small protection domains are packed into the same HW address space and protected by segment registers associated with the protection domains. There is no HW address space switch when switching between these small protection domains, so there is no more loss of locality than there would be in a monolithic OS.
+While switching between large protection domains in L3 requires a HW address space switch, the resulting loss of locality would be similar in a monolithic kernel. Since the protection domain is large, its working set is likely not in the cache anyway, so non-locality when jumping into a large protection domain is inherent to the protection domain, regardless of whether it is implemented in L3 or a monolithic kernel.
 
 ## 1.a (3 points)
 
@@ -71,7 +90,15 @@ Give one example of how SPIN’s intellectual contribution can be traced to the 
 
 ---
 
-__TODO__
+1. SPIN influenced the dynamic loading of device drivers in modern OS's (e.g., downloading code to the kernel) 
+2. Modern OS's, like monoliths, have adopted internal micokernel-based design influenced by SPIN
+
+---
+
+Ideas of extensibility (espoused in SPIN and Exokernel as exemplars) have had no impact on the state-of-the-art in operating systems structuring.
+False.
+Many modern operating systems have internally adopted a microkernel-based design.
+Similarly, technologies like dynamic loading of device drivers has come out of the thoughts that went into extensibility of OS services. 
 
 ## 1.b (3 points)
 
@@ -79,7 +106,16 @@ Give one example of how Exokernel’s intellectual contribution can be traced to
 
 ---
 
-__TODO__
+Ideas that hypervisors take from exokernel: keeping a personality for each guest, de-multiplexing external events (e.g., interrupts) to the specific guest, accounting for time for each guest OS execution.
+all trace back to exokernel
+
+---
+
+Today, much of the computing happens in datacenters. The secret sauce for running any application in the cloud is virtualization of the hardware so that ANY OS can run in a datacenter which in turn allows ANY application on that OS to run in a datacenter.
+
+The role of the hypervisor which is in charge of the physical hardware bears a lot of resemblance to the ideas in Exokernel. The main difference is while was exposing hardware at a very fine granularity to the library OS executing on top (to allow specialization of individual system services), the hypervisor provides access to the hardware resources to do specialization at an OS-level granularity as opposed to individual system services. 
+
+Specifically, ideas in virtualization such as keeping a personality for each guest OS, de-multiplexing external events (e.g., network interrupt) to the specific guest OS, accounting time for each guest OS execution can all be traced to similar mechanisms in Exokernel.
 
 ## 1.c (T/F + justification) (3 points)
 
@@ -99,7 +135,9 @@ SPIN is a microkernel
 
 ---
 
-False. SPIN is described as a library
+False.
+
+* SPIN only provides header files for functions for each subsystem that form the core components of an OS, and an event mechanism to upcall to these functions. It is not a microkernel.
 
 > Aside: The title of the SPIN paper is "SPIN – An Extensible Microkernel for Application-specific Operating System Services", so I'm not sure why our professor is classifying it as something else.
 
@@ -109,7 +147,10 @@ Exokernel is a microkernel
 
 ---
 
-False. The Exokernel architecture stands apart from Microkernels through its use of low-level primitives. This is what allows Exokernels to have performance that is superior to microkernels. __TODO: Revise__
+False.
+
+* Exokernel does not provide any abstractions (e.g, threads, IPC, virtual memory) that a microkernel would.
+* It is just a set of mechanisms to securely expose hardware resources at a fine granularity for building system services above exokernel. Exokernel is not a microkernel
 
 # 2. Virtualization (Paravirtualization) (34 points)
  

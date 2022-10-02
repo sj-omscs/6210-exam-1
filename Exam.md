@@ -59,36 +59,18 @@ Your friend thinks that the performance is going to be terrible compared to SPIN
 * L3 is able to handle system calls much more efficiently
 * Experimental evidence proved that L3 is significantly faster than SPIN in IPC
 
----
-
-1. L3 can leverage segment registers to organize protection domains the same hardware address space;
-2. Because we've organized protection domains in the same hardware address space, we won't need to flush the TLB so we don't give up locality when switching domains
-3. the cost of switching domains will be limited to saving/updating segment registers corresponding to the domains
-
----
-
-SPIN does not rely on hardware address space to enforce logical protection domain while L3 does. However, L3 construction shows that the cost for border crossing, including TLB and cache misses is only 123 processor cycles. As matter of fact, even if you hardcode machine instructions, it would still take 107 processor cycles to complete border crossing. Thus the cost of border crossing due to hardware- enforced protection domain is not as expensive as believed to be.
-
----
-
-Even without AS tagging, L3 takes advantage of whatever the hardware arch offers for hardware enforced segment bounds. Hardware address space can be carved out into segment domains. Even without address tagging, the process knows which segment registers aka hardware address spaces it can access. For larger protection domains, the address space switching doesn’t even matter since implicit cache costs dominate, an issue that exists in both SPIN and L3.
-
 ### 1.3.b (3 points)
 
 Your friend thinks that L3’s approach to OS structuring would incur more implicit cost for protection domain switch compared to a monolithic design. Is she right or wrong? Defend your stand with justification.
 
 ---
 
-1. L3 minimal ensures warm cache for small protection domains via minimal abstractions (to avoid polluting the cache) in the mKernel + optimization for the architecture 
-2. Monolith with separate hardware address spaces will need to flush the TLB in this architecture (no address-space tagging support) to distinguish between VPNs
-This means L3 would incur less implicit costs (cache locality)
-
----
-
 Wrong.
-Implicit cost comes from loss of cache locality.
-In L3, small protection domains are packed into the same HW address space and protected by segment registers associated with the protection domains. There is no HW address space switch when switching between these small protection domains, so there is no more loss of locality than there would be in a monolithic OS.
-While switching between large protection domains in L3 requires a HW address space switch, the resulting loss of locality would be similar in a monolithic kernel. Since the protection domain is large, its working set is likely not in the cache anyway, so non-locality when jumping into a large protection domain is inherent to the protection domain, regardless of whether it is implemented in L3 or a monolithic kernel.
+
+* L3 will not be any less efficient due to implicit costs than a Monolith
+* The implicit cost of switching protection domains comes from loss of cache locality in the CPU and TLB.
+* There is no added implicit cost when switching protection domains in L3 because the TLB does not need to be flushed since the address space can be shared between protection domains.
+* Large protection domains will require a TLB flush which increases implicit cost, but the same cost would be incurred for a monolith with subsystems that have large working sets.
 
 ## 1.a (3 points)
 
@@ -96,15 +78,7 @@ Give one example of how SPIN’s intellectual contribution can be traced to the 
 
 ---
 
-1. SPIN influenced the dynamic loading of device drivers in modern OS's (e.g., downloading code to the kernel) 
-2. Modern OS's, like monoliths, have adopted internal micokernel-based design influenced by SPIN
-
----
-
-Ideas of extensibility (espoused in SPIN and Exokernel as exemplars) have had no impact on the state-of-the-art in operating systems structuring.
-False.
-Many modern operating systems have internally adopted a microkernel-based design.
-Similarly, technologies like dynamic loading of device drivers has come out of the thoughts that went into extensibility of OS services. 
+SPIN helped prove the idea of dynamically loading code into the kernel, which can be seen today with device drivers. 
 
 ## 1.b (3 points)
 

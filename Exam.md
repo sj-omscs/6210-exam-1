@@ -22,7 +22,13 @@ Your friend thinks SPIN has shown conclusively that an entire OS can be written 
 
 ---
 
-SPIN was written primarily in the high-level language Modula-3 which provided static typing and strong typing. This is in constrast to many other operating systems of the day, and even most operating systems today, which were written in the low-level language C. SPIN's construction in Modula-3 proved that high-level languages can be used to build operating systems.
+* SPIN was written primarily in the high-level language Modula-3 which provided static typing and strong typing
+  * This is in constrast to many other operating systems of the day, and even most operating systems today, which were written primarily in the low-level language C
+* SPIN incorporated the C language alongside Modula-3 for some low-level operations
+* SPIN's construction in Modula-3 proved that high-level languages can be used to build many parts of an operating system
+* SPIN did not prove that an entire operating system can be witten in a high-level language
+
+__TODO: revise__
 
 ## 1.2 (3 points)
 
@@ -30,7 +36,14 @@ Upon page fault service by a library OS, the mapping `<vpn, pfn>` has to be inst
 
 ---
 
-__TODO__
+* Monoliths have a clear performance advantage when it comes to creating TLB entries
+  * Monoliths can simply create the TLB entry when handling a page fault
+  * Library OS's must create a secure binding when writing to the TLB. Creating a secure binding adds overhead
+  * The cost of secure bindings is greatly reduced with a software TLB (STLB), but the cost is still present
+  * The cost of writing to the TLB can be amortized over the lifetime of the TLB entry
+    * This benefit is reduced or even entirely eliminated when a programs working set is greater than the capacity of the TLB 
+* Exokernel can be faster than monoliths in other situations
+  * Network packet filtering
 
 ## 1.3
 
@@ -86,7 +99,9 @@ SPIN is a microkernel
 
 ---
 
-False. __TODO: Justify__
+False. SPIN is described as a library
+
+> Aside: The title of the SPIN paper is "SPIN – An Extensible Microkernel for Application-specific Operating System Services", so I'm not sure why our professor is classifying it as something else.
 
 ## 1.f (T/F + justification) (2 points)
 
@@ -94,7 +109,7 @@ Exokernel is a microkernel
 
 ---
 
-False. The Exokernel architecture stands apart from Microkernels through its use of low-level primitives. This is what allows Exokernels to have performance that is superior to microkernels.
+False. The Exokernel architecture stands apart from Microkernels through its use of low-level primitives. This is what allows Exokernels to have performance that is superior to microkernels. __TODO: Revise__
 
 # 2. Virtualization (Paravirtualization) (34 points)
  
@@ -108,7 +123,7 @@ How will you ensure zero-copy semantics (i.e., no copying from your Xinolinux to
 
 1. Data to be transmitted is stored in a buffer owned by Xenolinux
 1. Xenolinux will create a descriptor and issue a hypercall to enqueue the descriptor into the IO ring
-1. Xenolinux will pin the virtual pages containing the buffer during transmission so that Xen can transmit the data
+1. If Xenolinux has the capability to swap pages to disk, then Xenolinux must pin the virtual pages containing the buffer so that the data is in memory for Xen to access during transmission.
 
 The above is sufficient to enable zero-copying of transmitted data between Xenolinux and Xen. Xen is able to directly access the data to be transmitted through the buffer owned by Xenolinux
 
@@ -121,7 +136,8 @@ How will you ensure zero-copy semantics for receiving a packet from Xen into Xin
 This is very similar to the previous case.
 
 1. Data to be received will be stored in a pre-allocated buffer owned by Xenolinux
-1. Xen will 
+
+__TODO: elaborate__
 
 ## 2.c (Paravirtualization) (4 points)
 
@@ -134,10 +150,6 @@ __TODO__
 ## 2.d (Full virtualization) (8 points)
 
 Assume a guest-OS has started 4 processes in a fully virtualized environment on a 32-bit machine. Assuming 4K page size, explain how many entries this guest-OS has in the shadow page table.
-
----
-
-__TODO__
 
 ## 2.e (Full virtualization) (4 points)
 

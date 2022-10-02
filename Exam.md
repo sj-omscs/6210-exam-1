@@ -86,16 +86,7 @@ Give one example of how Exokernel’s intellectual contribution can be traced to
 
 ---
 
-Ideas that hypervisors take from exokernel: keeping a personality for each guest, de-multiplexing external events (e.g., interrupts) to the specific guest, accounting for time for each guest OS execution.
-all trace back to exokernel
-
----
-
-Today, much of the computing happens in datacenters. The secret sauce for running any application in the cloud is virtualization of the hardware so that ANY OS can run in a datacenter which in turn allows ANY application on that OS to run in a datacenter.
-
-The role of the hypervisor which is in charge of the physical hardware bears a lot of resemblance to the ideas in Exokernel. The main difference is while was exposing hardware at a very fine granularity to the library OS executing on top (to allow specialization of individual system services), the hypervisor provides access to the hardware resources to do specialization at an OS-level granularity as opposed to individual system services. 
-
-Specifically, ideas in virtualization such as keeping a personality for each guest OS, de-multiplexing external events (e.g., network interrupt) to the specific guest OS, accounting time for each guest OS execution can all be traced to similar mechanisms in Exokernel.
+Many of the techniques that Exokernel used can be seen in modern hypervisors. One instance of this is how Exokernel keeps track of execution time.
 
 ## 1.c (T/F + justification) (3 points)
 
@@ -103,12 +94,12 @@ SPIN and Exokernel are fair in comparing the superiority of their respective spe
 
 ---
 
-SPIN and Exokernel both aim for extensibility and performance while Mach focus on portability. Mach's focus on the ability to run independently of hardware architecture leads to a bloated code base. This results in lesser locality and longer latency for border crossing. Overall the Mach's memory footprint is the culprit for expensive border crossing and not the microkernel based structure itself. This is the tradeoff in terms of performance for portability. 
+True.
 
----
-
-1. True. SPIN and Exokernel succeeded in designing a microkernel-based OS that provides extensibility without giving up performance. 
-2. False. MACH was designed for portability and extensibility using a microkernel design and did not aim to optimize for performance. This is why MACH performs poorly (bloated kernel) in order to optimize for portability and it is NOT fair to compare MACH to SPIN and EXO on performance
+* Both SPIN and Exokernel are saught to provide an alternative to the monolithic OS architecture.
+* Mach placed value on portability which led to its poor performance
+* L3 may have been a better comparison since it focuses more on performance than portability, which is the same approach that both SPIN and Exokernel took
+* Exokernel provided another well performing alternative to microkernels
 
 ## 1.d (8 points)
 
@@ -122,7 +113,9 @@ SPIN is a microkernel
 
 False.
 
-* SPIN only provides header files for functions for each subsystem that form the core components of an OS, and an event mechanism to upcall to these functions. It is not a microkernel.
+* The SPIN paper describes itself as a microkernel, but we have define microkernel to mean a kernel in which OS systems run in their own address spaces.
+* SPIN dynamically loads extensions into the kernel's address space.
+* This difference is a large part of SPINs greater performance.
 
 > Aside: The title of the SPIN paper is "SPIN – An Extensible Microkernel for Application-specific Operating System Services", so I'm not sure why our professor is classifying it as something else.
 
@@ -134,8 +127,9 @@ Exokernel is a microkernel
 
 False.
 
-* Exokernel does not provide any abstractions (e.g, threads, IPC, virtual memory) that a microkernel would.
-* It is just a set of mechanisms to securely expose hardware resources at a fine granularity for building system services above exokernel. Exokernel is not a microkernel
+* Exokernel only provides primitives, whereas a traditional microkernel might provide abstractions like threads and virtual memory.
+  * This makes Exokernels signicantly more simple that a microkernel.
+* Exokernel allows dynamically uploading code into the kernel similar to SPIN.
 
 # 2. Virtualization (Paravirtualization) (34 points)
  

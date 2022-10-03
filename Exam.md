@@ -184,6 +184,10 @@ Assume a guest-OS has started 4 processes in a fully virtualized environment on 
 
 ---
 
+4K page size means 12 bits for the offset, and 20 bits for the index
+
+Answer is 2^20 * 5, because there are four processes plus the OS.
+
 __TODO__
 
 ## 2.e (Full virtualization) (4 points)

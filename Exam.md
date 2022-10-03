@@ -4,6 +4,8 @@
 
 [Practice Questions](https://docs.google.com/document/d/1oy_Xa8F4Ql4VTws-oVIISL1j1bQLTqmTt-Bs5ho2Ko0/edit?usp=sharing)
 
+[Matt Chung's blog](https://blog.mattchung.me/category/computer-science/advanced-operating-systems/)
+
 # 0. (1 point)
 
 OMSCS program was launched in
@@ -105,6 +107,8 @@ True.
 
 __HIDDEN__
 
+__TODO: prep for likely questions__
+
 ## 1.e (T/F + justification) (2 points)
 
 SPIN is a microkernel
@@ -166,15 +170,13 @@ How will you ensure zero-copy semantics for receiving a packet from Xen into Xin
 
 ## 2.c (Paravirtualization) (4 points)
 
-Multiple processes on top of Xinolinux wish to transmit at the same time. How do you handle this situation in your implementation?
+Multiple processes on top of Xenolinux wish to transmit at the same time. How do you handle this situation in your implementation?
 
 ---
 
-* Xenolinux provides a mutex that is locked when attempting to transmit data
-  * Processes will wait for their turn to access the mutex
-* Xenolinux will check for space in the IO ring before transmitting data
-  * Processes will wait until there is space in the IO ring
-* Data transfer can occur as usual
+* Applications will cause the usual APIs which cause Xenolinux to transmit in the manner described above
+* Transmission for multiple processes on Xenolinux works identically to transmission for one process. Xenolinux will allocate a buffer, fill it with data, and put it in the IO ring to be processed by Xen.
+* Xenolinux has exclusive write access to the request pointer, so it can schedule outgoing requests using whatever algorithm it pleases
 
 Xen will use a round-robin algorithm to transmit packets acrosss multiple VMs to ensure fairness.
 
@@ -184,11 +186,9 @@ Assume a guest-OS has started 4 processes in a fully virtualized environment on 
 
 ---
 
-4K page size means 12 bits for the offset, and 20 bits for the index
+4K page size means 12 bits for the offset, and (32 - 12) = 20 bits for the index
 
 Answer is 2^20 * 5, because there are four processes plus the OS.
-
-__TODO__
 
 ## 2.e (Full virtualization) (4 points)
 
@@ -200,16 +200,19 @@ List the steps before P2 starts execution on the processor.
 
 ---
 
-1. Guest OS tries to execute a privileged instruction to set the PTBR (page table base register) to the new process’s page table data structure (the PPN that contains this process’s page table).
-1. The ensuing trap is caught by the hypervisor. 
-1. Hypervisor uses the shadow page table for this Guest OS to get the MPN that corresponds to this PPN. This gives the page table for this process in machine memory.
-1. Hypervisor sets PTBR to this MPN.
-1. The Guest OS does the other necessary steps for the normal context switch. (e.g. load/store volatile state to/from PCB) all of which is accomplished using “trap and emulate” method.
+The hypervisor will use a trap-and-emuate strategy.
 
+1. The guest OS will execute a privileged instruction to update the page table base register (PTBR) to the new process page table. This will cause a TRAP that the hypervisor then handles
+1. The hypervisor will use the shadow page table for the guest to convert the PPN of the PTBR to the MPN
+1. The hypervisor sets the PTBR to the MPN
+1. The guest performs the normal steps for a context switch, such as saving and restoring registers
+1. Execution of P2 can now begin
 
 ## 2.f (10 points)
 
 __HIDDEN__
+
+__TODO: prep for likely questions__
 
 # 3. Parallel Systems (32 points)
 
@@ -328,6 +331,8 @@ The algorithm works by allowing one statically determined representative process
 ## 3.f (2 points)
 
 __HIDDEN__
+
+__TODO: prep for likely questions__
 
 ## 3.g (scheduling) (4 points)
 

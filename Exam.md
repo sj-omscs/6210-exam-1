@@ -222,10 +222,9 @@ You are implementing an invalidation-based cache coherent shared memory multipro
 
 ---
 
-1. Execute the RMW operating in the cache controller: Use the invalidation based CC protocol to obtain exclusive ownership for the memory location on which T&S is being performed and execute the RMW operation 
-1. Extended ownership of the interconnect: Give exclusive ownership of the interconnect (e.g., bus) so that the processor can complete the T&S operation to the memory location bypassing the cache. 
-1. Execute the RMW in the memory controller: Bypass the cache and send the T&S request to the memory controller. The memory controller serializes the T&S operation from different processors to the same memory location.
-
+* Execute the read-modify-write in the cache controller using invalidation based cache coherence.
+* Give exclusive ownership of the bus to the processor
+* Execute the read-modify-write in the memory controller. The memory controller will serialize operations to the same memory locations.
 
 ## 3.b (memory model) (4 points)
 
@@ -233,8 +232,8 @@ Your co-worker wants to provide a sequential consistency memory model to the app
 
 ---
 
-* Sequential consistency can be ensured by using cache coherence protocols to ensure exclusive access to a memory location before writing to it. 
-* For e.g., if we use an invalidate based coherence protocol, all cached copies of the cache line will be invalidated before a processor writes to that cache line. Other processors can fetch the updated cache line after the write (from the processor or memory).
+* Sequential consistency can be achieve with cache coherence protocols
+* For example, with an invalidate based coherence, all other copies of the cache will be invalidated before the write, which can then be fetch after the write.
 
 
 ## 3.c (spinlock) (4 points)
@@ -255,12 +254,7 @@ This algorithm does not rely on hardware cache coherence.
 
 ---
 
-False, this algorithm does use hardware cache coherence. It spins on the cached variable, waiting for it to be released. Once released, it will try to acquire the lock again
-
----
-
-False.
-Processors spin on cached value (While (L==locked)). The only way for them to come out of the spin loop is if the cached value changes which necessitates hardware cache coherence.
+False. The algorithm spins on the cached variable L.
 
 ### 3.c.2 (T/F + justification) (No credit without justification) (2 points?)
 
@@ -268,13 +262,7 @@ The algorithm performs especially well under high lock contention.
 
 ---
 
-True.
-Spinlock with static delay is better than spinlock with dynamic delay when there is high lock contention. Each processor gets a different delay, so there is a sequentializing of the order of the processors.
-
----
-
-True. 
-Upon lock release, different processors wait for different amount of delay times thus reducing the contention on the bus
+True. The use of the cache reduces resource contention, and the delay further helps reduce contention.
 
 ## 3.d (spinlock) (4 points)
 
@@ -286,13 +274,8 @@ What (if any) are the reasons for this algorithm to not work well?
 
 ---
 
-Note that the question specifies we are using an invalidation based CC protocol
-
-(For an update-based CC protocol):
-Upon each lock release L->now_serving is updated which results in unnecessary bus contention, since the change is meaningful for only ONE processor that is next in line to get the lock.
-
-(For invalidation-based protocol):
-The duration of pause (spin loop) is just a guestimate of the expected wait time for a processor. Every time it comes out to check if it is its turn for the lock, there would be bus contention to get L->now_serving if its cached value has been invalidated (due to an unlock operation).
+* The value of the pause duration is important. If it is too low, you'll cause unnecessary contention. If it is too high, you'll be waiting when you could be working.
+* Setting the value of the pause requires more knowledge about the performance characteristics of your program and hardware than other general purpose locks
 
 ## 3.e (barrier) (T/F + justification) (No credit without justification) (6 points)
 
@@ -303,12 +286,9 @@ MCS barrier will not work on a NCC-NUMA architecture.
 ---
 
 False.
-Processors using an MCS barrier spin on statically-determined flag variables only, so these locations can be located in the local memory of each processor, yielding good performance for NUMA architectures.
-Arrival and wake-up in MCS use explicit signaling of parents/children using distinct memory locations, so these signals can be sent directly to the parent/children without relying on cache coherence protocols.
 
----
-
-• False. MCS barrier spins on statically determined locations, so a child updating a parent’s memory (remotely) will also update their cache, since even in NCC-NUMA, the memory hierarchy is locally kept consistent.
+* Memory locations of variables to spin on are statically determined, so these can be cached in the local memory of each processor
+* Wake-up occurs using explicit signaling directly to the processor being woken up, so cache coherence is not required.
 
 ### 3.e.2 (2 points?)
 
@@ -316,8 +296,9 @@ The total communication complexity of dissemination barrier is O(N\*Log2N)
 
 ---
 
-True
-The dissemination barrier is made up of ceil(log2N) ~ log2(N) rounds, and in each round each processor sends a message, leading to a total of N\*Log2N messages being sent.
+True.
+
+Dissemination barrier requires ceiling(log(2, n)) rounds, with each round requiring n messages, so the complexity is n * ceiling(log(2, n))
 
 ### 3.e.3 (2 points?)
 
@@ -326,7 +307,10 @@ The tournament barrier works with both shared memory and message-passing (i.e., 
 ---
 
 True.
-The algorithm works by allowing one statically determined representative process from each round to go to the next round. When on a shared memory architecture (SMP, NUMA/NCC), the algorithm relies on spinning on a statically determined spin location that indicates the state of the barrier. It also works with message passing in cluster architecture, since the algorithm simply requires that the representative process can signal to the other process.
+
+* The algorithm relies on a statically determined winner and statically determined memory locations.
+* This allows the algorithm to have the winners directly notify the losers once the barrier is complete
+* Message-passing architectures are supported because the losers know who will be notifying them to continue.
 
 ## 3.f (2 points)
 
@@ -344,7 +328,7 @@ What purpose is served by the hardware threads?
 
 ---
 
-The purpose of multiple hardware threads in each core is to ensure efficient utilization of the single processor pipeline available to each core. If a hardware thread has to perform a long latency operation, e.g., miss in the last level cache (LLC) causing the processor to go off-chip to fetch the missing access from the memory (which can take 100 or more CPU cycles), the hardware can switch to another hardware thread. 
+Hardware threads allow better utilization of a physical CPU. When a thread is blocked, for example due to a page fault, the CPU can switch to another thread while waiting for the page fault to be handled.
 
 ### 3.g.2
 
@@ -352,7 +336,7 @@ What should the OS do ensure that processor pipeline is utilized well? Why?
 
 ---
 
-In scheduling the set of threads to run on the chip, the OS should ensure that the combined working sets of all the threads (number of cores X number of hardware threads per core) can be packed into the last level cache to reduce the occurrence of long latency operations (i.e., misses in the LLC).
+The OS should arrange threads so that they can efficiently exploit the CPU cache. Ideally this means that the working set of all threads executing on the CPU fit into the last level of CPU cache. The CPU should also schedule threads to run so that they can efficiently exploit the cache.
 
 ## 3.h (memory manager for multiprocessor) (4 points)
 
@@ -367,6 +351,7 @@ Does your design ensure that if there are concurrent page faults incurred by ind
 ---
 
 Yes.
+
 Since we have a page table per process, the page table needed to cater to different page faults would be different.
 
 ### 3.h.2 (2 points?)
@@ -376,4 +361,5 @@ Does your design ensure that if there are concurrent page faults incurred by thr
 ---
 
 No.
+
 Since the mappings from VPN to PPN for different threads of the same process will be present in the same page table, the memory manager would need to serialize the handling of these page faults
